@@ -12,7 +12,7 @@ import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import CompleteProfile from './pages/CompleteProfile';
 import AdminPanel from './pages/AdminPanel';
-import Chatbot from './components/Chatbot';
+// import Chatbot from './components/Chatbot';
 import Navbar from './components/Navbar';
 import FraudCheckerOverlay from './components/FraudCheckerOverlay';
 import './styles/global.css';
@@ -55,10 +55,7 @@ function LandingPageRoute({ children }) {
   return children;
 }
 
-// Chatbot Component
-function ChatbotWithAuth() {
-  return <Chatbot />;
-}
+
 
 function AppContent() {
   const [isFraudOpen, setIsFraudOpen] = React.useState(false);
@@ -71,9 +68,9 @@ function AppContent() {
       {showGlobalNav && (
         <>
           <Navbar onFraudClick={() => setIsFraudOpen((prev) => !prev)} />
-          <FraudCheckerOverlay 
-            isOpen={isFraudOpen} 
-            onClose={() => setIsFraudOpen(false)} 
+          <FraudCheckerOverlay
+            isOpen={isFraudOpen}
+            onClose={() => setIsFraudOpen(false)}
           />
         </>
       )}
@@ -81,89 +78,88 @@ function AppContent() {
       {/* ✅ FIX: NO Router here */}
       <Routes>
         {/* Public Routes */}
-        <Route 
-          path="/" 
+        <Route
+          path="/"
           element={
             <LandingPageRoute>
               <Index />
             </LandingPageRoute>
-          } 
+          }
         />
         <Route path="/index" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        <Route 
-          path="/complete-profile" 
+        <Route
+          path="/complete-profile"
           element={
             <ProtectedRoute>
               <CompleteProfile />
             </ProtectedRoute>
-          } 
+          }
         />
 
         {/* Protected Routes */}
-        <Route 
-          path="/dashboard" 
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <Dashboard />
             </ProtectedRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/credit-report" 
+        <Route
+          path="/credit-report"
           element={
             <ProfileRoute>
               <CreditReport />
             </ProfileRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/history" 
+        <Route
+          path="/history"
           element={
             <ProfileRoute>
               <History />
             </ProfileRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/improve-score" 
+        <Route
+          path="/improve-score"
           element={
             <ProfileRoute>
               <ImproveScore />
             </ProfileRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <ProfileRoute>
               <Profile />
             </ProfileRoute>
-          } 
+          }
         />
 
-        <Route 
-          path="/admin-panel" 
+        <Route
+          path="/admin-panel"
           element={
             <ProtectedRoute>
               <AdminPanel />
             </ProtectedRoute>
-          } 
+          }
         />
 
         {/* Catch all */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+
       </Routes>
 
-      {/* Chatbot */}
-      <ChatbotWithAuth />
+
     </>
   );
 }
