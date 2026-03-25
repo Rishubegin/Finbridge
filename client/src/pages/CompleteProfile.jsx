@@ -1,59 +1,93 @@
-import React, { useState, useContext, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
-import axios from '../utils/axiosInstance';
-import '../styles/complete-profile.css';
-import { extractTextFromImage } from '../utils/ocrService';
+import React, { useState, useContext, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import axios from "../utils/axiosInstance";
+import "../styles/complete-profile.css";
+import { extractTextFromImage } from "../utils/ocrService";
+
+// Toast notification helper
+const showToast = (message, type = "success") => {
+  // Create a simple toast notification
+  const toast = document.createElement("div");
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: ${type === "success" ? "#10b981" : "#ef4444"};
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    animation: slideIn 0.3s ease-in-out;
+  `;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.animation = "slideOut 0.3s ease-in-out";
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+};
 
 const STEPS = [
-  { id: 1, title: 'Personal Info', icon: '👤' },
-  { id: 2, title: 'Government ID', icon: '📄' },
-  { id: 3, title: 'Address', icon: '🏠' },
-  { id: 4, title: 'Financial', icon: '💰' },
-  { id: 5, title: 'Review', icon: '✓' },
+  { id: 1, title: "Personal Info", icon: "👤" },
+  { id: 2, title: "Government ID", icon: "📄" },
+  { id: 3, title: "Address", icon: "🏠" },
+  { id: 4, title: "Financial", icon: "💰" },
+  { id: 5, title: "Review", icon: "✓" },
 ];
 
 export default function CompleteProfile() {
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, updateUserProfile } = useContext(AuthContext);
   const fileInputRef = useRef(null);
 
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [extracting, setExtracting] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const [formData, setFormData] = useState({
-    name: user?.name || '',
-    phone: user?.phone || '',
-    dob: user?.dob ? user.dob.split('T')[0] : '',
-    pan: user?.pan || '',
-    aadhar: user?.aadhar || '',
-    panDocument: null,
-    panDocumentPreview: null,
-    address: user?.address || '',
-    city: user?.city || '',
-    state: user?.state || '',
-    pincode: user?.pincode || '',
-    income: user?.income || '',
-    occupation: user?.occupation || '',
+  // Initialize form with safe defaults - ensures all fields are strings for controlled inputs
+  const [formData, setFormData] = useState(() => {
+    console.log("📋 Initializing form with user data:", user);
+    return {
+      name: (user?.name || "").trim(),
+      phone: (user?.phone || "").trim(),
+      dob: user?.dob ? new Date(user.dob).toISOString().split("T")[0] : "",
+      pan: (user?.pan || "").trim().toUpperCase(),
+      aadhar: (user?.aadhar || "").trim(),
+      panDocument: null,
+      panDocumentPreview: null,
+      address: (user?.address || "").trim(),
+      city: (user?.city || "").trim(),
+      state: (user?.state || "").trim(),
+      pincode: (user?.pincode || "").trim(),
+      income: (user?.income || "").toString().trim(),
+      occupation: (user?.occupation || "").trim(),
+    };
   });
 
+  // Clear error messages on input change for better UX
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    setError('');
+    // Clear error when user starts typing
+    if (error) {
+      setError("");
+    }
   };
 
   const handleDocumentUpload = (e) => {
     const file = e.target.files[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        setError('File size must be less than 5MB');
+        setError("File size must be less than 5MB");
         return;
       }
 
@@ -64,7 +98,7 @@ export default function CompleteProfile() {
           panDocumentPreview: event.target.result,
           panDocument: file,
         }));
-        setError('');
+        setError("");
       };
       reader.readAsDataURL(file);
     }
@@ -72,20 +106,22 @@ export default function CompleteProfile() {
 
   const handleExtractText = async () => {
     if (!formData.panDocument) {
-      setError('Please upload a document first');
+      setError("Please upload a document first");
       return;
     }
 
     setExtracting(true);
-    setError('');
-    
+    setError("");
+
     try {
-      const extractedText = await extractTextFromImage(formData.panDocumentPreview);
-      
+      const extractedText = await extractTextFromImage(
+        formData.panDocumentPreview,
+      );
+
       // Parse PAN and name from extracted text
       const panMatch = extractedText.match(/[A-Z]{5}[0-9]{4}[A-Z]/);
       const nameMatch = extractedText.match(/(?:name|नाम)[:\s]*([A-Za-z\s]+)/i);
-      
+
       const updates = {};
       if (panMatch) {
         updates.pan = panMatch[0];
@@ -99,13 +135,17 @@ export default function CompleteProfile() {
           ...prev,
           ...updates,
         }));
-        setSuccess('Document details extracted successfully! You can edit them below.');
+        setSuccess(
+          "Document details extracted successfully! You can edit them below.",
+        );
       } else {
-        setSuccess('Document uploaded. Please fill in the details manually.');
+        setSuccess("Document uploaded. Please fill in the details manually.");
       }
     } catch (err) {
-      setError('Failed to extract text from document. Please fill in the details manually.');
-      console.error('OCR Error:', err);
+      setError(
+        "Failed to extract text from document. Please fill in the details manually.",
+      );
+      console.error("OCR Error:", err);
     } finally {
       setExtracting(false);
     }
@@ -134,26 +174,26 @@ export default function CompleteProfile() {
     // Validate current step
     if (currentStep === 1) {
       if (!formData.name || !formData.phone) {
-        setError('Please fill in all required fields in this step');
+        setError("Please fill in all required fields in this step");
         return;
       }
     } else if (currentStep === 3) {
       if (!formData.address || !formData.city || !formData.state) {
-        setError('Please fill in all required address fields');
+        setError("Please fill in all required address fields");
         return;
       }
     }
 
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     if (currentStep < STEPS.length) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrevStep = () => {
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
@@ -161,55 +201,109 @@ export default function CompleteProfile() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
+
+    // Validate all required fields with specific error messages
+    const requiredFields = {
+      name: "Name",
+      phone: "Phone number",
+      dob: "Date of birth",
+      pan: "PAN number",
+      aadhar: "Aadhar number",
+      address: "Address",
+      city: "City",
+      state: "State",
+      pincode: "Pincode",
+      income: "Income",
+      occupation: "Occupation",
+    };
+
+    const missingFields = Object.entries(requiredFields)
+      .filter(([key]) => !formData[key])
+      .map(([, label]) => label);
+
+    if (missingFields.length > 0) {
+      const fieldsList = missingFields.join(", ");
+      const errorMsg = `Please fill in: ${fieldsList}`;
+      setError(errorMsg);
+      showToast(errorMsg, "error");
+      return;
+    }
+
+    // Start loading - disable all interactions
     setLoading(true);
 
     try {
-      // Create FormData to handle file upload
-      const formDataToSend = new FormData();
-      
-      // Append all text fields
-      formDataToSend.append('name', formData.name);
-      formDataToSend.append('phone', formData.phone);
-      formDataToSend.append('dob', formData.dob);
-      formDataToSend.append('pan', formData.pan);
-      formDataToSend.append('aadhar', formData.aadhar);
-      formDataToSend.append('address', formData.address);
-      formDataToSend.append('city', formData.city);
-      formDataToSend.append('state', formData.state);
-      formDataToSend.append('pincode', formData.pincode);
-      formDataToSend.append('income', formData.income);
-      formDataToSend.append('occupation', formData.occupation);
+      // Step 1: Collect all form data from state
+      const profileData = {
+        name: formData.name.trim(),
+        phone: formData.phone.trim(),
+        dob: formData.dob,
+        pan: formData.pan.trim().toUpperCase(),
+        aadhar: formData.aadhar.trim(),
+        address: formData.address.trim(),
+        city: formData.city.trim(),
+        state: formData.state.trim(),
+        pincode: formData.pincode.trim(),
+        income: formData.income.trim(),
+        occupation: formData.occupation.trim(),
+      };
 
-      // Append file if exists
-      if (formData.panDocument) {
-        formDataToSend.append('document', formData.panDocument);
-      }
+      console.log("📤 Submitting profile data:", profileData);
 
-      const response = await axios.post('/users/profile/complete', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Step 2: Send PUT request to backend API (/api/users/profile)
+      const response = await updateUserProfile(profileData);
 
-      if (response.data.success) {
-        setSuccess('✅ Profile completed successfully!');
+      console.log("✅ Profile update response:", response);
+
+      // Step 3: Verify successful response
+      if (response.success && response.user) {
+        // Show immediate success feedback
+        const successMsg = "✅ Profile completed successfully!";
+        showToast(successMsg);
+        setSuccess(successMsg);
+
+        console.log("🔄 Global user state updated:", response.user);
+
+        // Step 4: Brief delay to show success message
+        // Then navigate to dashboard where updated data will be displayed
         setTimeout(() => {
-          navigate('/dashboard');
-        }, 2000);
+          console.log("🚀 Navigating to dashboard...");
+          navigate("/dashboard");
+        }, 1500);
+      } else {
+        throw new Error("No success response from server");
       }
     } catch (err) {
-      setError(
-        err.response?.data?.error || 'Failed to complete profile. Please try again.'
-      );
+      console.error("❌ Profile submission error:", err);
+
+      // Step 5: Handle and display errors gracefully
+      let errorMsg = "Failed to update profile. Please try again.";
+
+      if (err.response?.status === 401) {
+        errorMsg = "Session expired. Please login again.";
+        // Optional: logout user and redirect to login
+      } else if (err.response?.status === 400) {
+        errorMsg = err.response?.data?.error || "Invalid profile data.";
+      } else if (err.response?.status === 500) {
+        errorMsg = "Server error. Please try again later.";
+      } else if (err.response?.data?.error) {
+        errorMsg = err.response.data.error;
+      } else if (err.message) {
+        errorMsg = err.message;
+      }
+
+      setError(errorMsg);
+      showToast(errorMsg, "error");
     } finally {
+      // Step 6: Always re-enable interactions
       setLoading(false);
     }
   };
 
   const handleSkip = () => {
-    navigate('/dashboard');
+    navigate("/dashboard");
   };
 
   const progress = calculateProgress();
@@ -242,7 +336,7 @@ export default function CompleteProfile() {
             <div className="progress-text">
               <span className="progress-percentage">{progress}% Complete</span>
               <span className="progress-hint">
-                {progress >= 80 ? 'Ready to submit!' : 'Keep going...'}
+                {progress >= 80 ? "Ready to submit!" : "Keep going..."}
               </span>
             </div>
           </div>
@@ -255,10 +349,10 @@ export default function CompleteProfile() {
               <div
                 className={`step-item ${
                   currentStep === step.id
-                    ? 'active'
+                    ? "active"
                     : currentStep > step.id
-                    ? 'completed'
-                    : ''
+                      ? "completed"
+                      : ""
                 }`}
                 onClick={() => {
                   if (currentStep > step.id) {
@@ -294,7 +388,9 @@ export default function CompleteProfile() {
           {currentStep === 1 && (
             <div className="form-section fade-in">
               <h2 className="section-title">Personal Information</h2>
-              <p className="section-subtitle">Let's start with your basic details</p>
+              <p className="section-subtitle">
+                Let's start with your basic details
+              </p>
 
               <div className="form-grid">
                 <div className="form-group">
@@ -377,7 +473,7 @@ export default function CompleteProfile() {
 
                   {formData.panDocumentPreview ? (
                     <div className="document-preview">
-                      {formData.panDocument?.type.startsWith('image/') ? (
+                      {formData.panDocument?.type.startsWith("image/") ? (
                         <img
                           src={formData.panDocumentPreview}
                           alt="Document preview"
@@ -428,7 +524,7 @@ export default function CompleteProfile() {
                         <span className="spinner"></span> Extracting...
                       </>
                     ) : (
-                      '🔍 Auto-Extract Details'
+                      "🔍 Auto-Extract Details"
                     )}
                   </button>
                 )}
@@ -547,7 +643,9 @@ export default function CompleteProfile() {
 
               <div className="map-placeholder">
                 <span className="map-icon">🗺️</span>
-                <p>Address details will help us provide location-based insights</p>
+                <p>
+                  Address details will help us provide location-based insights
+                </p>
               </div>
             </div>
           )}
@@ -585,11 +683,11 @@ export default function CompleteProfile() {
                     type="button"
                     className={`bracket ${
                       formData.income && parseInt(formData.income) < 500000
-                        ? 'active'
-                        : ''
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() =>
-                      setFormData({ ...formData, income: '400000' })
+                      setFormData({ ...formData, income: "400000" })
                     }
                   >
                     &lt; 5 Lakhs
@@ -600,11 +698,11 @@ export default function CompleteProfile() {
                       formData.income &&
                       parseInt(formData.income) >= 500000 &&
                       parseInt(formData.income) < 1000000
-                        ? 'active'
-                        : ''
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() =>
-                      setFormData({ ...formData, income: '750000' })
+                      setFormData({ ...formData, income: "750000" })
                     }
                   >
                     5L - 10L
@@ -615,11 +713,11 @@ export default function CompleteProfile() {
                       formData.income &&
                       parseInt(formData.income) >= 1000000 &&
                       parseInt(formData.income) < 2000000
-                        ? 'active'
-                        : ''
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() =>
-                      setFormData({ ...formData, income: '1500000' })
+                      setFormData({ ...formData, income: "1500000" })
                     }
                   >
                     10L - 20L
@@ -628,11 +726,11 @@ export default function CompleteProfile() {
                     type="button"
                     className={`bracket ${
                       formData.income && parseInt(formData.income) >= 2000000
-                        ? 'active'
-                        : ''
+                        ? "active"
+                        : ""
                     }`}
                     onClick={() =>
-                      setFormData({ ...formData, income: '2500000' })
+                      setFormData({ ...formData, income: "2500000" })
                     }
                   >
                     20L+
@@ -674,13 +772,13 @@ export default function CompleteProfile() {
                     <div className="review-item">
                       <span className="review-label">DOB:</span>
                       <span className="review-value">
-                        {formData.dob || 'Not provided'}
+                        {formData.dob || "Not provided"}
                       </span>
                     </div>
                     <div className="review-item">
                       <span className="review-label">Occupation:</span>
                       <span className="review-value">
-                        {formData.occupation || 'Not provided'}
+                        {formData.occupation || "Not provided"}
                       </span>
                     </div>
                   </div>
@@ -692,19 +790,21 @@ export default function CompleteProfile() {
                     <div className="review-item">
                       <span className="review-label">PAN:</span>
                       <span className="review-value">
-                        {formData.pan || 'Not provided'}
+                        {formData.pan || "Not provided"}
                       </span>
                     </div>
                     <div className="review-item">
                       <span className="review-label">Aadhar:</span>
                       <span className="review-value">
-                        {formData.aadhar || 'Not provided'}
+                        {formData.aadhar || "Not provided"}
                       </span>
                     </div>
                     <div className="review-item">
                       <span className="review-label">Document:</span>
                       <span className="review-value">
-                        {formData.panDocument ? '✅ Uploaded' : '❌ Not uploaded'}
+                        {formData.panDocument
+                          ? "✅ Uploaded"
+                          : "❌ Not uploaded"}
                       </span>
                     </div>
                   </div>
@@ -716,25 +816,25 @@ export default function CompleteProfile() {
                     <div className="review-item">
                       <span className="review-label">Address:</span>
                       <span className="review-value">
-                        {formData.address || 'Not provided'}
+                        {formData.address || "Not provided"}
                       </span>
                     </div>
                     <div className="review-item">
                       <span className="review-label">City:</span>
                       <span className="review-value">
-                        {formData.city || 'Not provided'}
+                        {formData.city || "Not provided"}
                       </span>
                     </div>
                     <div className="review-item">
                       <span className="review-label">State:</span>
                       <span className="review-value">
-                        {formData.state || 'Not provided'}
+                        {formData.state || "Not provided"}
                       </span>
                     </div>
                     <div className="review-item">
                       <span className="review-label">Pincode:</span>
                       <span className="review-value">
-                        {formData.pincode || 'Not provided'}
+                        {formData.pincode || "Not provided"}
                       </span>
                     </div>
                   </div>
@@ -746,7 +846,7 @@ export default function CompleteProfile() {
                     <div className="review-item">
                       <span className="review-label">Annual Income:</span>
                       <span className="review-value">
-                        ₹{formData.income || 'Not provided'}
+                        ₹{formData.income || "Not provided"}
                       </span>
                     </div>
                   </div>
@@ -777,7 +877,7 @@ export default function CompleteProfile() {
               }}
               disabled={loading || extracting}
             >
-              {currentStep === 1 ? '⏭️ Skip for Now' : '← Previous'}
+              {currentStep === 1 ? "⏭️ Skip for Now" : "← Previous"}
             </button>
 
             {currentStep === STEPS.length ? (
@@ -791,7 +891,7 @@ export default function CompleteProfile() {
                     <span className="spinner"></span> Submitting...
                   </>
                 ) : (
-                  '✓ Complete Profile'
+                  "✓ Complete Profile"
                 )}
               </button>
             ) : (
@@ -815,7 +915,7 @@ export default function CompleteProfile() {
               {STEPS.map((step) => (
                 <span
                   key={step.id}
-                  className={`dot ${currentStep === step.id ? 'active' : ''}`}
+                  className={`dot ${currentStep === step.id ? "active" : ""}`}
                 ></span>
               ))}
             </span>

@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
-import bcryptjs from 'bcryptjs';
+import mongoose from "mongoose";
+import bcryptjs from "bcryptjs";
 
 const userSchema = new mongoose.Schema(
   {
@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema(
     pan: {
       type: String,
       default: null,
-      unique: true,
       sparse: true,
     },
     aadhar: {
@@ -89,8 +88,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ["user", "admin"],
+      default: "user",
     },
 
     // Credit Data
@@ -115,12 +114,12 @@ const userSchema = new mongoose.Schema(
       accountAge: { type: Date },
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 // Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
 
   try {
     const salt = await bcryptjs.genSalt(10);
@@ -139,16 +138,16 @@ userSchema.methods.comparePassword = async function (passwordToCompare) {
 // Method to calculate profile completion percentage
 userSchema.methods.calculateProfileCompletion = function () {
   const profileFields = [
-    'phone',
-    'pan',
-    'aadhar',
-    'dob',
-    'address',
-    'city',
-    'state',
-    'pincode',
-    'income',
-    'occupation',
+    "phone",
+    "pan",
+    "aadhar",
+    "dob",
+    "address",
+    "city",
+    "state",
+    "pincode",
+    "income",
+    "occupation",
   ];
 
   let completedFields = 0;
@@ -169,5 +168,4 @@ userSchema.methods.toJSON = function () {
   return obj;
 };
 
-export default mongoose.model('User', userSchema);
-
+export default mongoose.model("User", userSchema);

@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .profile-container {
@@ -44,7 +44,7 @@
 }
 
 .profile-header::before {
-  content: '';
+  content: "";
   position: absolute;
   top: -50%;
   right: -10%;
@@ -55,7 +55,7 @@
 }
 
 .profile-header::after {
-  content: '';
+  content: "";
   position: absolute;
   bottom: -30%;
   left: -5%;
@@ -92,11 +92,16 @@
 }
 
 .logo-circle.gradient-bg {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
   }
   50% {
@@ -140,7 +145,7 @@
   height: 100%;
   background: linear-gradient(90deg, #4ade80, #34d399);
   border-radius: 10px;
-  transition: width 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 0 20px rgba(74, 222, 128, 0.6);
 }
 
@@ -183,7 +188,7 @@
 }
 
 .step-item-wrapper:not(:last-child)::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 30px;
   left: 60%;
@@ -714,7 +719,7 @@
 }
 
 .benefit-list li::before {
-  content: '✓';
+  content: "✓";
   position: absolute;
   left: 0;
   color: #10b981;
@@ -1134,3 +1139,44 @@
   }
 }
 
+/* ===== TOAST NOTIFICATIONS ===== */
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+}
+
+.toast {
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(10px);
+}
+
+.toast-success {
+  background-color: #10b981;
+  color: white;
+}
+
+.toast-error {
+  background-color: #ef4444;
+  color: white;
+}
