@@ -172,7 +172,9 @@
   border-radius: 12px;
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 .grid-item:hover {
@@ -742,8 +744,8 @@
 
 /* Buttons */
 .btn-secondary {
-  background: #3498db;
-  color: white;
+  background: #3296d8;
+  color: rgb(204, 193, 193);
   border: none;
   padding: 10px 20px;
   border-radius: 6px;
@@ -796,12 +798,12 @@
   margin: 25px;
   width: fit-content;
   background: #f0f4f8;
-  color: #3498db;
-  border: 1.5px solid #3498db;
+  color: #fbfbfc;
+  border: 1.5px solid #3ba3e9;
 }
 
 .action-btn.btn-secondary:hover {
-  background: #e8f2fb;
+  background: #d1d7db;
   border-color: #2980b9;
   color: #2980b9;
   transform: translateY(-2px);
@@ -837,7 +839,6 @@
 }
 
 @keyframes float {
-
   0%,
   100% {
     transform: translateY(0px);

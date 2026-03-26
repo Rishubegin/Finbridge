@@ -2,7 +2,7 @@
 // Collects all financial inputs needed to compute CIBIL score via FICO model.
 // On submit it calls onSubmit(data) — wire this to ScoreCard.
 
-import { useState } from "react";
+import React, { useState } from "react";
 
 const CREDIT_TYPES = [
   { id: "credit_card", label: "Credit Card" },
@@ -80,8 +80,8 @@ export default function CibilDataForm({ onSubmit }) {
         <div style={styles.headerAccent} />
         <h2 style={styles.title}>CIBIL Score Calculator</h2>
         <p style={styles.subtitle}>
-          Enter your credit data below — we apply the FICO model to compute
-          your score instantly.
+          Enter your credit data below — we apply the FICO model to compute your
+          score instantly.
         </p>
       </div>
 
@@ -157,8 +157,8 @@ export default function CibilDataForm({ onSubmit }) {
                     (form.creditUsed / form.creditLimit) * 100 > 50
                       ? "#ef4444"
                       : (form.creditUsed / form.creditLimit) * 100 > 30
-                      ? "#f59e0b"
-                      : "#0ea5e9",
+                        ? "#f59e0b"
+                        : "#0ea5e9",
                 }}
               >
                 {((form.creditUsed / form.creditLimit) * 100).toFixed(1)}%
@@ -196,7 +196,11 @@ export default function CibilDataForm({ onSubmit }) {
         >
           <div style={styles.checkGrid}>
             {CREDIT_TYPES.map((t) => (
-              <label key={t.id} style={styles.checkLabel} className="check-item">
+              <label
+                key={t.id}
+                style={styles.checkLabel}
+                className="check-item"
+              >
                 <input
                   type="checkbox"
                   checked={form.creditTypes.includes(t.id)}
@@ -247,10 +251,18 @@ export default function CibilDataForm({ onSubmit }) {
 
       {/* Actions */}
       <div style={styles.actions}>
-        <button style={styles.resetBtn} onClick={handleReset} className="reset-btn">
+        <button
+          style={styles.resetBtn}
+          onClick={handleReset}
+          className="reset-btn"
+        >
           Reset
         </button>
-        <button style={styles.submitBtn} onClick={handleSubmit} className="submit-btn">
+        <button
+          style={styles.submitBtn}
+          onClick={handleSubmit}
+          className="submit-btn"
+        >
           Calculate CIBIL Score →
         </button>
       </div>
@@ -269,7 +281,9 @@ function Section({ number, title, weight, color, hint, children }) {
           <h3 style={styles.sectionTitle}>{title}</h3>
           <p style={styles.sectionHint}>{hint}</p>
         </div>
-        <span style={{ ...styles.weightBadge, background: color + "22", color }}>
+        <span
+          style={{ ...styles.weightBadge, background: color + "22", color }}
+        >
           Weight {weight}
         </span>
       </div>
@@ -282,7 +296,16 @@ function Row({ children }) {
   return <div style={styles.row}>{children}</div>;
 }
 
-function Field({ label, placeholder, value, onChange, error, type = "text", step, min }) {
+function Field({
+  label,
+  placeholder,
+  value,
+  onChange,
+  error,
+  type = "text",
+  step,
+  min,
+}) {
   return (
     <div style={styles.fieldWrap}>
       <label style={styles.label}>{label}</label>

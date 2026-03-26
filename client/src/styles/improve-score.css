@@ -130,7 +130,7 @@
 }
 
 .progress-bar-fill::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -141,8 +141,12 @@
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .progress-labels {
@@ -170,13 +174,17 @@
 }
 
 .selected-loan-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1), transparent);
+  background: radial-gradient(
+    circle at 20% 50%,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -367,10 +375,18 @@
   animation-fill-mode: both;
 }
 
-.recommendation-item:nth-child(1) { animation-delay: 0.1s; }
-.recommendation-item:nth-child(2) { animation-delay: 0.2s; }
-.recommendation-item:nth-child(3) { animation-delay: 0.3s; }
-.recommendation-item:nth-child(4) { animation-delay: 0.4s; }
+.recommendation-item:nth-child(1) {
+  animation-delay: 0.1s;
+}
+.recommendation-item:nth-child(2) {
+  animation-delay: 0.2s;
+}
+.recommendation-item:nth-child(3) {
+  animation-delay: 0.3s;
+}
+.recommendation-item:nth-child(4) {
+  animation-delay: 0.4s;
+}
 
 .recommendation-item:hover {
   transform: translateY(-4px);
@@ -632,7 +648,7 @@
 }
 
 .success-stories-section .section-header p {
-  color: #7f8c8d;
+  color: white;
   font-size: 14px;
 }
 
@@ -734,7 +750,7 @@
 }
 
 .resources-section .section-header p {
-  color: #7f8c8d;
+  color: white;
   font-size: 14px;
 }
 
@@ -871,4 +887,3 @@
     justify-content: space-around;
   }
 }
-

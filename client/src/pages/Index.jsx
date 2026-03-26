@@ -66,21 +66,25 @@ export default function Index() {
 
   const steps = [
     {
+      icon: "👤",
       number: "01",
       title: "Sign In",
       description: "Create your account or log in to access your dashboard",
     },
     {
+      icon: "📊",
       number: "02",
       title: "View Analytics",
       description: "See your credit score and comprehensive financial overview",
     },
     {
+      icon: "💡",
       number: "03",
       title: "Get Insights",
       description: "Receive AI-powered recommendations to improve your score",
     },
     {
+      icon: "🎯",
       number: "04",
       title: "Take Action",
       description: "Implement suggestions and track your progress in real-time",
@@ -229,6 +233,7 @@ export default function Index() {
           <div className="steps-grid">
             {steps.map((step, index) => (
               <div key={index} className="step-card">
+                <span className="step-icon">{step.icon}</span>
                 <div className="step-number">{step.number}</div>
                 <h3 className="step-title">{step.title}</h3>
                 <p className="step-description">{step.description}</p>
@@ -616,7 +621,7 @@ export default function Index() {
           </div>
           <div className="footer-divider"></div>
           <div className="footer-bottom">
-            <p>&copy; 2024 FinBridge. All rights reserved.</p>
+            <p>&copy; 2026 FinBridge. All rights reserved.</p>
             <div className="social-links">
               <a href="#twitter">𝕏</a>
               <a href="#facebook">f</a>

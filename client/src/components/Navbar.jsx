@@ -30,6 +30,7 @@ export default function Navbar() {
     { label: "📋 Credit Report", path: "/credit-report" },
     { label: "📈 History", path: "/history" },
     { label: "🚀 Improve Score", path: "/improve-score" },
+    { label: "🏦 Bank Loans", path: "/bank-loans" }, // ← NEW
     { label: "👤 Profile", path: "/profile" },
   ];
 
@@ -71,6 +72,7 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
         <div className="nav-actions">
           <div className="welcome-message">
             👋 Welcome back, <span className="user-name">{userName}</span>

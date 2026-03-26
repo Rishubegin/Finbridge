@@ -1,34 +1,22 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React, { useContext } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthContext, AuthProvider } from './context/AuthContext.jsx';
-import Index from './pages/Index';
-import Dashboard from './pages/Dashboard';
-import CreditReport from './pages/CreditReport';
-import History from './pages/History';
-import ImproveScore from './pages/ImproveScore';
-import Profile from './pages/Profile';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import CompleteProfile from './pages/CompleteProfile';
-import AdminPanel from './pages/AdminPanel';
-import CibilCalculator from './pages/CibilCalculator'; // Updated to use page component
-import Navbar from './components/Navbar';
-import FraudCheckerOverlay from './components/FraudCheckerOverlay';
-import './styles/global.css';
+import React, { useContext } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AuthContext, AuthProvider } from "./context/AuthContext.jsx";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import CreditReport from "./pages/CreditReport";
+import History from "./pages/History";
+import ImproveScore from "./pages/ImproveScore";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import CompleteProfile from "./pages/CompleteProfile";
+import AdminPanel from "./pages/AdminPanel";
+import CibilCalculator from "./pages/CibilCalculator";
+import Navbar from "./components/Navbar";
+import FraudCheckerOverlay from "./components/FraudCheckerOverlay";
+import BankLoansSection from "./components/BankLoansSection";
+import "./styles/global.css";
 
 function ProtectedRoute({ children }) {
   const { user, token } = useContext(AuthContext);
@@ -55,7 +43,9 @@ function LandingPageRoute({ children }) {
 function AppContent() {
   const [isFraudOpen, setIsFraudOpen] = React.useState(false);
   const location = useLocation();
-  const showGlobalNav = !(location.pathname === '/' || location.pathname === '/index');
+  const showGlobalNav = !(
+    location.pathname === "/" || location.pathname === "/index"
+  );
 
   return (
     <>
@@ -71,7 +61,14 @@ function AppContent() {
 
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<LandingPageRoute><Index /></LandingPageRoute>} />
+        <Route
+          path="/"
+          element={
+            <LandingPageRoute>
+              <Index />
+            </LandingPageRoute>
+          }
+        />
         <Route path="/index" element={<Index />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
@@ -79,38 +76,79 @@ function AppContent() {
 
         <Route
           path="/complete-profile"
-          element={<ProtectedRoute><CompleteProfile /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <CompleteProfile />
+            </ProtectedRoute>
+          }
         />
 
         {/* Protected Routes */}
         <Route
           path="/dashboard"
-          element={<ProtectedRoute><Dashboard /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
         />
         <Route
           path="/credit-report"
-          element={<ProfileRoute><CreditReport /></ProfileRoute>}
+          element={
+            <ProfileRoute>
+              <CreditReport />
+            </ProfileRoute>
+          }
         />
         <Route
           path="/history"
-          element={<ProfileRoute><History /></ProfileRoute>}
+          element={
+            <ProfileRoute>
+              <History />
+            </ProfileRoute>
+          }
         />
         <Route
           path="/improve-score"
-          element={<ProfileRoute><ImproveScore /></ProfileRoute>}
+          element={
+            <ProfileRoute>
+              <ImproveScore />
+            </ProfileRoute>
+          }
         />
         <Route
           path="/profile"
-          element={<ProfileRoute><Profile /></ProfileRoute>}
+          element={
+            <ProfileRoute>
+              <Profile />
+            </ProfileRoute>
+          }
         />
         <Route
           path="/admin-panel"
-          element={<ProtectedRoute><AdminPanel /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <AdminPanel />
+            </ProtectedRoute>
+          }
         />
-
         <Route
           path="/cibil-calculator"
-          element={<ProtectedRoute><CibilCalculator /></ProtectedRoute>}
+          element={
+            <ProtectedRoute>
+              <CibilCalculator />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ── NEW: Bank Loans Route ── */}
+        <Route
+          path="/bank-loans"
+          element={
+            <ProtectedRoute>
+              <BankLoansSection />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </>

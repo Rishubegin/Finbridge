@@ -49,8 +49,13 @@
 }
 
 @keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .nav-logo-text {
@@ -73,7 +78,11 @@
 
 .fraud-check-section {
   padding: 80px 20px;
-  background: linear-gradient(135deg, rgba(118, 75, 162, 0.05), rgba(102, 126, 234, 0.04));
+  background: linear-gradient(
+    135deg,
+    rgba(118, 75, 162, 0.05),
+    rgba(102, 126, 234, 0.04)
+  );
 }
 
 .fraud-check-section .section-header {
@@ -88,7 +97,6 @@
 .fraud-check-section .sidebar-note {
   color: #4a5568;
 }
-
 
 .nav-links {
   display: flex;
@@ -144,7 +152,11 @@
 /* Hero Section */
 .hero-section {
   padding: 100px 20px 80px;
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.1) 0%,
+    rgba(118, 75, 162, 0.05) 100%
+  );
 }
 
 .hero-container {
@@ -404,7 +416,11 @@
 
 /* How It Works */
 .how-it-works {
-  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+  background: linear-gradient(
+    135deg,
+    rgba(102, 126, 234, 0.05) 0%,
+    rgba(118, 75, 162, 0.05) 100%
+  );
 }
 
 .fraud-checker-overlay {
@@ -455,6 +471,9 @@
 }
 
 .step-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   background: white;
   padding: 40px 30px;
   border-radius: 15px;
@@ -479,6 +498,9 @@
   margin-bottom: 20px;
 }
 
+.step-icon {
+  font-size: 40px;
+}
 .step-title {
   font-size: 20px;
   font-weight: 700;
@@ -1028,4 +1050,3 @@
     gap: 30px;
   }
 }
-

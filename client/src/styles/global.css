@@ -13,7 +13,7 @@
   --light-bg: #ecf0f1;
   --white: #ffffff;
   --text-dark: #2c3e50;
-  --text-light: #7f8c8d;
+  --text-light: rgb(255, 255, 255);
   --border-color: #bdc3c7;
   --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
@@ -373,7 +373,8 @@ button {
 
 .comparison-item .label {
   font-size: 11px;
-  color: var(--text-light);
+  /* background-color: rgb(86, 208, 241); */
+  color: var(--text-dark);
   text-transform: uppercase;
 }
 
