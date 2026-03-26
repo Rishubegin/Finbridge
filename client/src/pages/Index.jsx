@@ -114,6 +114,7 @@ export default function Index() {
               className="nav-link fraud-btn"
               onClick={() => setIsFraudOpen(true)}
             >
+              <span className="fraud-icon">⚡</span>
               Fraud Checker
             </button>
           </div>

@@ -9,6 +9,10 @@ export function AuthProvider({ children }) {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    const storedToken = localStorage.getItem("token");
+    return !!storedToken;
+  });
   const [loading, setLoading] = useState(false);
 
   const login = useCallback(async (email, password) => {
@@ -19,6 +23,7 @@ export function AuthProvider({ children }) {
       if (response.data.success) {
         setToken(response.data.token);
         setUser(response.data.user);
+        setIsAuthenticated(true);
         localStorage.setItem("token", response.data.token);
         localStorage.setItem(
           "FinBridge_user",
@@ -38,6 +43,7 @@ export function AuthProvider({ children }) {
   const logout = useCallback(() => {
     setUser(null);
     setToken(null);
+    setIsAuthenticated(false);
     localStorage.removeItem("token");
     localStorage.removeItem("FinBridge_user");
   }, []);
@@ -79,7 +85,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, token, loading, login, logout, updateUserProfile }}
+      value={{ user, token, isAuthenticated, loading, login, logout, updateUserProfile }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Navbar() {
   const navigate = useNavigate();
@@ -19,10 +20,37 @@ export default function Navbar() {
     }
   }, []);
 
+  const { logout } = useContext(AuthContext);
+
+  const showToast = (message, type = "success") => {
+    const toast = document.createElement("div");
+    toast.className = `toast toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 14px;
+      background: ${type === "error" ? "#f44336" : "#4caf50"};
+      color: #fff;
+      border-radius: 8px;
+      z-index: 9999;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      font-weight: 600;
+      opacity: 0.95;
+    `;
+    document.body.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 300);
+    }, 1400);
+  };
+
   const handleLogout = () => {
-    localStorage.removeItem("FinBridge_user");
+    navigate("/");
+    logout();
     localStorage.removeItem("FinBridge_remember");
-    navigate("/login");
+    showToast("Logged out successfully", "success");
   };
 
   const navItems = [
@@ -40,7 +68,8 @@ export default function Navbar() {
         <div
           className="navbar-logo"
           onClick={() => {
-            navigate("/dashboard");
+            navigate("/");
+            logout();
             setIsMobileMenuOpen(false);
           }}
           style={{ cursor: "pointer" }}
