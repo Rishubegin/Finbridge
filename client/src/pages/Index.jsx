@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import FraudCheckerModal from "../components/FraudCheckerModal.jsx";
 import "../styles/index.css";
 
@@ -107,16 +107,18 @@ export default function Index() {
             <a href="#how-it-works" className="nav-link">
               How It Works
             </a>
-            <a href="#about" className="nav-link">
-              About
-            </a>
-            <button
-              className="nav-link fraud-btn"
-              onClick={() => setIsFraudOpen(true)}
-            >
-              <span className="fraud-icon">⚡</span>
-              Fraud Checker
-            </button>
+            <Link to="/fraud-awareness" className="nav-link">
+              Fraud Awareness
+            </Link>
+            <Link to="/">
+              <button
+                className="nav-link fraud-btn"
+                onClick={() => setIsFraudOpen(true)}
+              >
+                <span className="fraud-icon">⚡</span>
+                Fraud Checker
+              </button>
+            </Link>
           </div>
           <div className="nav-buttons">
             <button

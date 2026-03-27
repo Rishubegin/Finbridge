@@ -1,21 +1,23 @@
-import React, { useContext } from 'react';
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { AuthContext, AuthProvider } from './context/AuthContext.jsx';
-import Index from './pages/Index';
-import Dashboard from './pages/Dashboard';
-import CreditReport from './pages/CreditReport';
-import History from './pages/History';
-import ImproveScore from './pages/ImproveScore';
-import Profile from './pages/Profile';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import ForgotPassword from './pages/ForgotPassword';
-import CompleteProfile from './pages/CompleteProfile';
-import AdminPanel from './pages/AdminPanel';
-import CibilCalculator from './pages/CibilCalculator'; // Updated to use page component
-import Navbar from './components/Navbar';
-import FraudCheckerOverlay from './components/FraudCheckerOverlay';
-import './styles/global.css';
+import React, { useContext } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { AuthContext, AuthProvider } from "./context/AuthContext.jsx";
+import Index from "./pages/Index";
+import Dashboard from "./pages/Dashboard";
+import CreditReport from "./pages/CreditReport";
+import History from "./pages/History";
+import ImproveScore from "./pages/ImproveScore";
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import CompleteProfile from "./pages/CompleteProfile";
+import AdminPanel from "./pages/AdminPanel";
+import CibilCalculator from "./pages/CibilCalculator"; // Updated to use page component
+import Navbar from "./components/Navbar";
+import FraudCheckerOverlay from "./components/FraudCheckerOverlay";
+import "./styles/global.css";
+import BankLoansSection from "./components/BankLoansSection.jsx";
+import FraudAwarenessHub from "./components/FraudAlert.jsx";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated } = useContext(AuthContext);
@@ -42,7 +44,9 @@ function AppContent() {
   const { isAuthenticated } = useContext(AuthContext);
   const location = useLocation();
   const showGlobalNav = !(
-    location.pathname === "/" || location.pathname === "/index"
+    location.pathname === "/" ||
+    location.pathname === "/index" ||
+    location.pathname === "/fraud-awareness"
   );
 
   return (
@@ -77,7 +81,11 @@ function AppContent() {
         <Route
           path="/register"
           element={
-            isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />
+            isAuthenticated ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <Register />
+            )
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -158,6 +166,7 @@ function AppContent() {
             </ProtectedRoute>
           }
         />
+        <Route path="/fraud-awareness" element={<FraudAwarenessHub />} />
       </Routes>
     </>
   );
